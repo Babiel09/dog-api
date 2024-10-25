@@ -16,5 +16,11 @@ func HandleRequest() {
 	request.PATCH("/cao/:id/legenda", controllers.PatchCaoLegenda)
 	request.DELETE("/cao/:id", controllers.DeleteCao)
 	request.GET("/cao/:id", controllers.GetCaesPerID)
+	//Parte de perguntas da API:
+	request.GET("/question", controllers.GetQuestions)
+	request.GET("/question/:id", controllers.GetQuestionsPId)
+	request.POST("question", controllers.PostQuestion)
+	request.PUT("question/:id", controllers.PutQuestion)
+	request.DELETE("question/:id", controllers.DeleteQuestion)
 	request.Run()
 }

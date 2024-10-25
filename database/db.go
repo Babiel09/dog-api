@@ -24,5 +24,6 @@ func ConectarComBase() {
 	}
 	//Criando a tablea com o gorm:
 	DB.AutoMigrate(models.Caes{})
+	DB.AutoMigrate(models.Perguntas{})
 	log.Println("Conexão com o banco de dados estabelecia")
 }
