@@ -41,8 +41,8 @@ func GetCaesPerID(c *gin.Context) {
 func PostCao(c *gin.Context) {
 	var postCao models.Caes
 	//Caso ocorra um erro
-	if err := c.ShouldBindJSON(&postCao); err != nil {
-		c.JSON(400, gin.H{"error": "ocorreu um erro, verifique os parâmetros da URL"})
+	if err := models.ValidarInformations(&postCao); err != nil {
+		c.JSON(400, gin.H{"error": "Ocorreu um erro, verifique se todos os campos foram preenchidos."})
 		return
 
 	}
@@ -59,8 +59,8 @@ func PutCao(c *gin.Context) {
 	//Procura no banco de dados o devido id na devida table
 	database.DB.First(&putCao, id)
 	//Caso ocorra um erro
-	if err := c.ShouldBindJSON(&putCao); err != nil {
-		c.JSON(304, gin.H{"error": "ocorreu um erro, verifique os parâmetros da URL"})
+	if err := models.ValidarInformations(&putCao); err != nil {
+		c.JSON(400, gin.H{"error": "Ocorreu um erro, verifique se todos os campos foram preenchidos."})
 		return
 
 	}
@@ -71,68 +71,38 @@ func PutCao(c *gin.Context) {
 
 //Patchs
 
-func PatchCaoNome(c *gin.Context) {
+func PatchCaoTitle(c *gin.Context) {
 	var patchCao models.Caes
 	id := c.Params.ByName("id")
 	//Procura as informações do database
 	database.DB.First(&patchCao, id)
 	//Caso ocorra um erro
-	if err := c.ShouldBindJSON(&patchCao); err != nil {
-		c.JSON(304, gin.H{"error": "ocorreu um erro, verifique os parâmetros da URL"})
+	if err := models.ValidarInformations(&patchCao); err != nil {
+		c.JSON(400, gin.H{"error": "Ocorreu um erro, verifique se todos os campos foram preenchidos."})
 		return
 
 	}
 	//Caso não ocorra um erro
-	database.DB.Model(&patchCao).UpdateColumn("nome", patchCao.Nome)
+	database.DB.Model(&patchCao).UpdateColumn("title", patchCao.Title)
 	c.JSON(202, patchCao)
 
 }
-func PatchCaoIdade(c *gin.Context) {
+
+func PatchCaoLegenda(c *gin.Context) {
 	var patchCao models.Caes
 	id := c.Params.ByName("id")
 	//Procura as informações do database
 	database.DB.First(&patchCao, id)
 	//Caso ocorra um erro
-	if err := c.ShouldBindJSON(&patchCao); err != nil {
-		c.JSON(304, gin.H{"error": "ocorreu um erro, verifique os parâmetros da URL"})
+	if err := models.ValidarInformations(&patchCao); err != nil {
+		c.JSON(400, gin.H{"error": "Ocorreu um erro, verifique se todos os campos foram preenchidos."})
 		return
 
 	}
 	//Caso não ocorra um erro
-	database.DB.Model(&patchCao).UpdateColumn("idade", patchCao.Idade)
+	database.DB.Model(&patchCao).UpdateColumn("legenda", patchCao.Legenda)
 	c.JSON(202, patchCao)
 
-}
-func PatchCaoPeso(c *gin.Context) {
-	var patchCao models.Caes
-	id := c.Params.ByName("id")
-	//Procura as informações do database
-	database.DB.First(&patchCao, id)
-	//Caso ocorra um erro
-	if err := c.ShouldBindJSON(&patchCao); err != nil {
-		c.JSON(304, gin.H{"error": "ocorreu um erro, verifique os parâmetros da URL"})
-		return
-
-	}
-	//Caso não ocorra um erro
-	database.DB.Model(&patchCao).UpdateColumn("peso", patchCao.Peso)
-	c.JSON(202, patchCao)
-
-}
-func PatchCaoTemp(c *gin.Context) {
-	var patchCao models.Caes
-	id := c.Params.ByName("id")
-	//Procura as informações do database
-	database.DB.First(&patchCao, id)
-	//Caso ocorra um erro
-	if err := c.ShouldBindJSON(&patchCao); err != nil {
-		c.JSON(304, gin.H{"error": "ocorreu um erro, verifique os parâmetros da URL"})
-		return
-
-	}
-	//Caso não ocorra um erro
-	database.DB.Model(&patchCao).UpdateColumn("temperamento", patchCao.Temperamento)
-	c.JSON(202, patchCao)
 }
 
 //Delete
