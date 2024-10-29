@@ -8,13 +8,28 @@ import (
 
 func PutQuestion(c *gin.Context) {
 	var req models.Perguntas
-	id := c.Params.ByName("id")
-	database.DB.First(&req, id)
-	//Veirica se não há nenhum erro
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"server": "Unxpected error"})
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(400, req)
+		return
 	}
-	//Caso não ocorra nenhum erro
-	database.DB.Save(&req)
+
+	result := database.DB.First(&req, id)
+	if result.Error != nil {
+		c.JSON(400, result)
+		return
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(500, err.Error())
+		return
+	}
+
+	update := database.DB.Save(&req)
+	if update.Error != nil {
+		c.JSON(400, update)
+		return
+	}
+	c.JSON(202, req)
 
 }

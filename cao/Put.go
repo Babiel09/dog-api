@@ -8,16 +8,26 @@ import (
 
 func PutCao(c *gin.Context) {
 	var req models.Caes
-	id := c.Params.ByName("id")
-	//Procura no banco de dados o devido id na devida table
-	database.DB.First(&req, id)
-	//Caso ocorra um erro
-	if err := models.ValidarInformations(&req); err != nil {
-		c.JSON(400, gin.H{"error": "Ocorreu um erro, verifique se todos os campos foram preenchidos."})
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(400, req)
 		return
-
 	}
-	//Caso não ocorra um erro
-	database.DB.Save(&req)
+
+	result := database.DB.First(&req, id)
+	if result.Error != nil {
+		c.JSON(400, result)
+		return
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(500, err.Error())
+		return
+	}
+
+	update := database.DB.Save(&req)
+	if update.Error != nil {
+		c.JSON(400, result)
+		return
+	}
 	c.JSON(202, req)
 }

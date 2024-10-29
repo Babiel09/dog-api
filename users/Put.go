@@ -7,13 +7,31 @@ import (
 )
 
 func PutUser(c *gin.Context) {
-	var putUser models.User
-	id := c.Params.ByName("id")
-	database.DB.First(&putUser, id)
-	if err := models.UserValidation(&putUser); err != nil {
-		c.JSON(400, gin.H{"server": "Ocorreu um erro para a modificação do usuário, por favor verifique o valor das credênciais."})
+	var req models.User
+	id := c.Param("id")
+
+	if id == "" {
+		c.JSON(400, req)
 		return
 	}
-	database.DB.Save(&putUser)
-	c.JSON(202, putUser)
+
+	result := database.DB.First(&req, id)
+	if result.Error != nil {
+		c.JSON(400, gin.H{"server": result})
+		return
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, err.Error())
+		return
+	}
+
+	update := database.DB.Save(&req)
+	if update.Error != nil {
+		c.JSON(400, gin.H{"server": update})
+		return
+	}
+
+	c.JSON(202, req)
+
 }

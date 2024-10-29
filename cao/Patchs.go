@@ -7,35 +7,32 @@ import (
 )
 
 func PatchCaoTitle(c *gin.Context) {
-	var patchCao models.Caes
-	id := c.Params.ByName("id")
-	//Procura as informações do database
-	database.DB.First(&patchCao, id)
-	//Caso ocorra um erro
-	if err := models.ValidarInformations(&patchCao); err != nil {
-		c.JSON(400, gin.H{"error": "Ocorreu um erro, verifique se todos os campos foram preenchidos."})
-		return
+	var req models.Caes
+	id := c.Param("id")
 
+	if id == "" {
+		c.JSON(500, req)
 	}
+	//Procura as informações do database
+	database.DB.First(&req, id)
 	//Caso não ocorra um erro
-	database.DB.Model(&patchCao).UpdateColumn("title", patchCao.Title)
-	c.JSON(202, patchCao)
+	database.DB.Model(&req).UpdateColumn("title", req.Title)
+	c.JSON(202, req)
 
 }
 
 func PatchCaoLegenda(c *gin.Context) {
-	var patchCao models.Caes
-	id := c.Params.ByName("id")
-	//Procura as informações do database
-	database.DB.First(&patchCao, id)
-	//Caso ocorra um erro
-	if err := models.ValidarInformations(&patchCao); err != nil {
-		c.JSON(400, gin.H{"error": "Ocorreu um erro, verifique se todos os campos foram preenchidos."})
-		return
+	var req2 models.Caes
+	id := c.Param("id")
 
+	if id == "" {
+		c.JSON(500, req2)
 	}
+	//Procura as informações do database
+	database.DB.First(&req2, id)
+	//Caso ocorra um erro
 	//Caso não ocorra um erro
-	database.DB.Model(&patchCao).UpdateColumn("legenda", patchCao.Legenda)
-	c.JSON(202, patchCao)
+	database.DB.Model(&req2).UpdateColumn("legenda", req2.Legenda)
+	c.JSON(202, req2)
 
 }

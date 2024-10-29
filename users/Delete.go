@@ -7,12 +7,18 @@ import (
 )
 
 func DelteUser(c *gin.Context) {
-	var deleteUser models.User
+	var req models.User
 	id := c.Params.ByName("id")
-	database.DB.Delete(&deleteUser, id)
-	if deleteUser.Id == 0 {
-		c.JSON(202, gin.H{"server": "Usuário deletado com sucesso"})
+
+	if id == "" {
+		c.JSON(400, req)
 		return
 	}
-	c.JSON(500, gin.H{"server": "Ocorreu um erro, o usuário não foi deletado, verifique os parâmetros da URL"})
+	delete := database.DB.Delete(&req, id)
+	if delete.Error != nil {
+		c.JSON(400, delete)
+		return
+	}
+
+	c.JSON(202, gin.H{"server": "Dog is sucefully deleted"})
 }

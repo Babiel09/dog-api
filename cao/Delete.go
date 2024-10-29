@@ -8,12 +8,16 @@ import (
 
 func DeleteCao(c *gin.Context) {
 	var req models.Caes
-	id := c.Params.ByName("id")
+	id := c.Param("id")
+
+	if id == "" {
+		c.JSON(400, req)
+		return
+	}
 	//Tenta deletar no banco de dados
-	database.DB.Delete(&req, id)
-	//Caso o cão seja deletado
-	if req.Id == 0 {
-		c.JSON(202, gin.H{"server": "cão deletado com sucesso"})
+	delete := database.DB.Delete(&req, id)
+	if delete.Error != nil {
+		c.JSON(400, delete)
 		return
 	}
 	c.JSON(202, gin.H{"server": "Dog is sucefully deleted"})

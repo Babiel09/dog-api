@@ -15,6 +15,10 @@ func PostCao(c *gin.Context) {
 
 	}
 	//Caso não ocorra um erro
-	database.DB.Create(&req)
+	create := database.DB.Create(&req)
+	if create.Error != nil {
+		c.JSON(400, gin.H{"error": "Ocorreu um erro, verifique se todos os campos foram preenchidos."})
+		return
+	}
 	c.JSON(201, req)
 }

@@ -9,7 +9,11 @@ import (
 func GetCaes(c *gin.Context) {
 	var req []models.Caes
 	//PRocura no banco de dados
-	database.DB.Find(&req)
+	procurar := database.DB.Find(&req)
+	if procurar.Error != nil {
+		c.JSON(400, gin.H{"error": "Ocorreu um erro, verifique os parâmetros do corpo do resposta"})
+		return
+	}
 	//Caso ocorra um erro
 	if len(req) == 0 {
 		c.JSON(400, gin.H{"error": "ocorreu um erro, verifique os parâmetros da URL"})
